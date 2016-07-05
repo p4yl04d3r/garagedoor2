@@ -1,5 +1,5 @@
 # garagedoor2
-Garage door controller written in LUA to run on ESP8266 with nodemcu.<br>
+The garage door controller was written in LUA to run on ESP8266 with nodemcu.<br>
 The monitor/controller operates via its own webserver more or less standalone.
 
 I say this project is more/less standalone because there is a requirement to have a few css and js files served from a separate webserver. This was required because of space constraints on the ESP8266.  
