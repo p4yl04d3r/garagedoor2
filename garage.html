@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <title>Garage Remote</title>
+	  <!-- Change IP to web server that servers the following icons and services -->
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script src="http://192.168.10.7/jquery-2.1.3.min.js"></script>  
+      <link rel="stylesheet" href="http://192.168.10.7/bootstrap-3.3.4-dist/css/bootstrap.min.css">  
+	  <script src="http://192.168.10.7/jquery-confirm.js"></script>   
+	  <link rel="stylesheet" href="http://192.168.10.7/jquery-confirm.css">   
+      <title>Garage Status</title>
+	  <link rel="icon" type="image/png" href="http://192.168.10.7/apple-touch-icon.png"/>
+	  <link rel="apple-touch-icon" href="http://192.168.10.7/apple-touch-icon.png"/>  
+   </head>
+   <script>
+      var xmlHttp = null;      
+ 
+      function getdoorstate(door)
+      {
+         var url = "/garage.lc?door=" + door;
+
+         xmlHttp = new XMLHttpRequest();
+         xmlHttp.onreadystatechange = processRequest;
+         xmlHttp.open("GET", url, true);
+         xmlHttp.send( null );
+      }
+      function processRequest()
+      {
+         if(xmlHttp.readyState == 0)
+         {
+            document.getElementById("label").innerHTML = 'Initalizing...';
+            document.getElementById("label").className = "initalizing";
+         }
+         else if(xmlHttp.readyState == 1)
+         {
+            document.getElementById("label").innerHTML = 'Server connection established.';
+            document.getElementById("label").className = "connection";
+         }
+         else if(xmlHttp.readyState == 2)
+         {
+            document.getElementById("label").innerHTML = 'Request received.';
+            document.getElementById("label").className = "received";
+         }
+         else if(xmlHttp.readyState == 3)
+         {
+            document.getElementById("label").innerHTML = 'Processing request.';
+            document.getElementById("label").className = "processing";
+         }
+         else if(xmlHttp.readyState == 4)
+         {
+            if(xmlHttp.status == 200)
+            {
+               document.getElementById("label").innerHTML = xmlHttp.responseText;
+               document.getElementById("label").className = "ok";
+               sleep(300);
+               document.getElementById("label").className = "start";
+            }
+            else if(xmlHttp.status == 400)
+            {
+               document.getElementById("label").innerHTML = 'Bad request.';
+               document.getElementById("label").className = "bad";
+            }
+         }
+      }
+
+
+	</script>
+	<body>
+    <div class="container">
+		<h1>Garage Door Control</h1>
+		<div class="row">
+			<div id="label" class="start"></div>
+				<script> window.onload=function() { getdoorstate(0); } </script>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col-md-4"><input class="btn btn-block btn-lg btn-primary" type="button" value="Refresh" onclick="location.reload();"></div>
+			</div>
+		</div>
+	</div>
+	<script>function door1() {$.confirm({theme: "black", title: "Confirm", content: "Do you really want to close/open garage door?", 
+	autoClose: "cancel|5000", confirmButton: "Okay", confirmButtonClass: "btn-danger", confirm: function(){getdoorstate(1);}, 
+	cancelButton: "Cancel", cancelButtonClass: "btn-success", cancel: function(){} });}</script>
+	
+	<script>function door2() {$.confirm({theme: "black", title: "Confirm", content: "Do you really want to close/open garage door?", 
+	autoClose: "cancel|5000", confirmButton: "Okay", confirmButtonClass: "btn-danger", confirm: function(){getdoorstate(2);}, 
+	cancelButton: "Cancel", cancelButtonClass: "btn-success", cancel: function(){} });}</script>
+
+   </body>
+</html>
